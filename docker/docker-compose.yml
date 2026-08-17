@@ -38,3 +38,29 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  xray:
+    build:
+      context: ../xray
+    restart: unless-stopped
+    environment:
+      XRAY_VLESS_PORT: ${XRAY_VLESS_PORT}
+      XRAY_SS_PORT: ${XRAY_SS_PORT}
+      REALITY_DEST: ${REALITY_DEST}
+      REALITY_SERVER_NAMES: ${REALITY_SERVER_NAMES}
+      REALITY_PRIVATE_KEY: ${REALITY_PRIVATE_KEY}
+      REALITY_SHORT_ID: ${REALITY_SHORT_ID}
+      SHADOWSOCKS_METHOD: ${SHADOWSOCKS_METHOD}
+      SHADOWSOCKS_PASSWORD: ${SHADOWSOCKS_PASSWORD}
+    ports:
+      - "${XRAY_VLESS_PORT}:${XRAY_VLESS_PORT}"
+      - "${XRAY_SS_PORT}:${XRAY_SS_PORT}/tcp"
+      - "${XRAY_SS_PORT}:${XRAY_SS_PORT}/udp"
+    networks:
+      - twolink-internal
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
