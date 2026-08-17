@@ -1,0 +1,30 @@
+services:
+  postgres:
+    security_opt:
+      - no-new-privileges:true
+    cpus: 0.5
+
+  xray:
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /etc/xray/generated
+      - /tmp
+    cpus: 0.3
+
+  backend:
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    cpus: 0.5
+
+  bot:
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    cpus: 0.2
