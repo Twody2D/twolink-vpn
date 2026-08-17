@@ -1,0 +1,51 @@
+networks:
+  twolink-node:
+    driver: bridge
+
+services:
+  xray:
+    build:
+      context: ../xray
+    restart: unless-stopped
+    environment:
+      XRAY_VLESS_PORT: ${XRAY_VLESS_PORT}
+      XRAY_SS_PORT: ${XRAY_SS_PORT}
+      XRAY_API_PORT: ${XRAY_API_PORT}
+      REALITY_DEST: ${REALITY_DEST}
+      REALITY_SERVER_NAMES: ${REALITY_SERVER_NAMES}
+      REALITY_PRIVATE_KEY: ${REALITY_PRIVATE_KEY}
+      REALITY_SHORT_ID: ${REALITY_SHORT_ID}
+      SHADOWSOCKS_METHOD: ${SHADOWSOCKS_METHOD}
+      SHADOWSOCKS_PASSWORD: ${SHADOWSOCKS_PASSWORD}
+    ports:
+      - "${XRAY_VLESS_PORT}:${XRAY_VLESS_PORT}"
+      - "${XRAY_SS_PORT}:${XRAY_SS_PORT}/tcp"
+      - "${XRAY_SS_PORT}:${XRAY_SS_PORT}/udp"
+    networks:
+      - twolink-node
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  node-agent:
+    build:
+      context: ../node-agent
+    restart: unless-stopped
+    environment:
+      NODE_API_KEY: ${NODE_API_KEY}
+      ALLOWED_BACKEND_IPS: ${ALLOWED_BACKEND_IPS}
+      XRAY_API_HOST: xray
+      XRAY_API_PORT: ${XRAY_API_PORT}
+    ports:
+      - "${NODE_AGENT_PORT}:8000"
+    networks:
+      - twolink-node
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
