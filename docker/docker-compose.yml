@@ -108,7 +108,7 @@ services:
       - backend
     networks:
       - twolink-internal
-    mem_limit: 128m
+    mem_limit: 192m
     logging:
       driver: json-file
       options:
