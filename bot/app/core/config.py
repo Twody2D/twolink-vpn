@@ -8,7 +8,6 @@ class Settings(BaseSettings):
     backend_internal_api_key: str
     backend_internal_url: str = "http://backend:8000"
     public_base_url: str = "http://localhost:8000"
-    node_id: str
 
 
 settings = Settings()

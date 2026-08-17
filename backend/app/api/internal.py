@@ -11,6 +11,7 @@ from app.models.node import Node
 from app.models.subscription import Subscription
 from app.models.user import User
 from app.schemas.subscription import SubscriptionCreateRequest, SubscriptionResponse
+from app.services.node_selection import select_least_loaded_node
 from app.services.xray_client import get_xray_client
 
 router = APIRouter(prefix="/internal", dependencies=[Depends(verify_internal_api_key)])
@@ -21,7 +22,13 @@ async def create_subscription(
     payload: SubscriptionCreateRequest,
     session: AsyncSession = Depends(get_session),
 ) -> Subscription:
-    node = (await session.execute(select(Node).where(Node.node_id == payload.node_id, Node.is_active.is_(True)))).scalar_one_or_none()
+    if payload.node_id is not None:
+        node = (
+            await session.execute(select(Node).where(Node.node_id == payload.node_id, Node.is_active.is_(True)))
+        ).scalar_one_or_none()
+    else:
+        node = await select_least_loaded_node(session)
+
     if node is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="node not found or inactive")
 

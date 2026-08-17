@@ -6,3 +6,4 @@ alembic==1.14.0
 pydantic-settings==2.6.1
 xtlsapi==3.3.0
 slowapi==0.1.9
+httpx==0.28.1

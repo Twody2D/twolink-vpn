@@ -11,10 +11,11 @@ class BackendClient:
             timeout=10.0,
         )
 
-    async def create_subscription(self, telegram_id: int, username: str | None, node_id: str) -> dict:
+    async def create_subscription(self, telegram_id: int, username: str | None) -> dict:
+        # node_id omitted — backend auto-picks the least-loaded active node.
         response = await self._client.post(
             "/internal/subscriptions",
-            json={"telegram_id": telegram_id, "username": username, "node_id": node_id},
+            json={"telegram_id": telegram_id, "username": username},
         )
         response.raise_for_status()
         return response.json()

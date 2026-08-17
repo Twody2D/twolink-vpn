@@ -82,6 +82,7 @@ services:
       REALITY_PUBLIC_KEY: ${REALITY_PUBLIC_KEY}
       REALITY_SHORT_ID: ${REALITY_SHORT_ID}
       REALITY_SERVER_NAMES: ${REALITY_SERVER_NAMES}
+      NODE_AGENT_API_KEYS: ${NODE_AGENT_API_KEYS}
     depends_on:
       postgres:
         condition: service_healthy
@@ -103,7 +104,6 @@ services:
       BACKEND_INTERNAL_API_KEY: ${BACKEND_INTERNAL_API_KEY}
       BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL}
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
-      NODE_ID: ${NODE_ID}
     depends_on:
       - backend
     networks:

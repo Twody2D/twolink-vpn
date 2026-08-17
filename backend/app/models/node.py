@@ -37,8 +37,16 @@ class Node(Base, TimestampMixin):
     is_local: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     # SHA-256 hex digest of the node-agent's API key — never the plaintext key.
-    # Null for local nodes, which aren't authenticated this way.
+    # The plaintext key itself lives only in the backend's own .env
+    # (NODE_AGENT_API_KEYS), the same trust boundary as every other secret in
+    # this project — this hash is a reference/audit value, not the credential
+    # used to authenticate requests. Null for local nodes.
     api_key_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    # Where the backend reaches this node's node-agent over HTTPS. Null for
+    # local nodes, which are never contacted through node-agent.
+    agent_host: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    agent_port: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     # Operational health, distinct from is_active (admin-controlled "accept
     # new users on this node or not"): "online" | "offline" | "unknown".

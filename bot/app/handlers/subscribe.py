@@ -29,7 +29,6 @@ async def pay_stub(callback: CallbackQuery) -> None:
         subscription = await backend_client.create_subscription(
             telegram_id=callback.from_user.id,
             username=callback.from_user.username,
-            node_id=settings.node_id,
         )
     except httpx.HTTPError:
         logger.exception("failed to create subscription for telegram_id=%s", callback.from_user.id)

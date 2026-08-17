@@ -18,5 +18,10 @@ class Settings(BaseSettings):
     reality_short_id: str
     reality_server_names: str
 
+    # Plaintext API keys for remote pico-nodes' node-agents, format
+    # "node_id:key,node_id2:key2". Never stored in the database — see
+    # app/services/xray_client/remote_client.py.
+    node_agent_api_keys: str = ""
+
 
 settings = Settings()

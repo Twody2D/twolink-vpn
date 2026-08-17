@@ -6,7 +6,8 @@ from pydantic import BaseModel, ConfigDict
 class SubscriptionCreateRequest(BaseModel):
     telegram_id: int
     username: str | None = None
-    node_id: str
+    # Omit to auto-pick the least-loaded active node.
+    node_id: str | None = None
 
 
 class SubscriptionResponse(BaseModel):
