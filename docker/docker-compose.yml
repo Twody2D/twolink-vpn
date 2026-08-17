@@ -64,3 +64,24 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  backend:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      DATABASE_URL: ${DATABASE_URL}
+      BACKEND_INTERNAL_API_KEY: ${BACKEND_INTERNAL_API_KEY}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - twolink-internal
+    mem_limit: 256m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
