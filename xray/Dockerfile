@@ -5,7 +5,7 @@ FROM alpine:3.20
 RUN apk add --no-cache ca-certificates gettext && \
     addgroup -S xray && adduser -S -G xray xray
 
-COPY --from=xray-bin /usr/bin/xray /usr/local/bin/xray
+COPY --from=xray-bin /usr/local/bin/xray /usr/local/bin/xray
 
 COPY config/config.template.json /etc/xray/config.template.json
 COPY entrypoint.sh /entrypoint.sh
