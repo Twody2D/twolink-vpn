@@ -93,3 +93,24 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  bot:
+    build:
+      context: ../bot
+    restart: unless-stopped
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      BACKEND_INTERNAL_API_KEY: ${BACKEND_INTERNAL_API_KEY}
+      BACKEND_INTERNAL_URL: ${BACKEND_INTERNAL_URL}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      NODE_ID: ${NODE_ID}
+    depends_on:
+      - backend
+    networks:
+      - twolink-internal
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
