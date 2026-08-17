@@ -5,8 +5,10 @@ from app.models.base import Base, TimestampMixin
 
 
 class Node(Base, TimestampMixin):
-    """A single Xray server. Subscriptions reference nodes by node_id so the
-    backend can manage and serve configs for multiple servers, not just one."""
+    """A single Xray server — either co-located with the backend (is_local)
+    or a remote pico-node managed over HTTPS via its node-agent. Subscriptions
+    reference nodes by node_id so the backend can manage and serve configs
+    for a whole fleet, not just one hardcoded server."""
 
     __tablename__ = "nodes"
 
@@ -19,14 +21,29 @@ class Node(Base, TimestampMixin):
     ss_port: Mapped[int] = mapped_column(Integer, nullable=False, default=8388)
 
     # Where the backend reaches this node's Xray gRPC management API.
-    # For a node co-located with the backend (same docker-compose project)
-    # this is the "xray" service DNS name; for a remote node it would be a
-    # private/VPN address the backend can reach — never the public client host.
+    # For a local node this is the "xray" service DNS name on the shared
+    # docker network; for a remote node it's meaningless (remote nodes are
+    # only reachable through their node-agent, never directly).
     xray_api_host: Mapped[str] = mapped_column(String(255), nullable=False)
     xray_api_port: Mapped[int] = mapped_column(Integer, nullable=False, default=10085)
 
     reality_public_key: Mapped[str] = mapped_column(String(64), nullable=False)
     reality_short_id: Mapped[str] = mapped_column(String(16), nullable=False)
     reality_server_name: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    # True for the single node co-located with the backend (in-process/docker
+    # network access to Xray). False for remote pico-nodes, which are only
+    # reachable through their node-agent over HTTPS with their own API key.
+    is_local: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+    # SHA-256 hex digest of the node-agent's API key — never the plaintext key.
+    # Null for local nodes, which aren't authenticated this way.
+    api_key_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    # Operational health, distinct from is_active (admin-controlled "accept
+    # new users on this node or not"): "online" | "offline" | "unknown".
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="unknown")
+
+    max_users: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)

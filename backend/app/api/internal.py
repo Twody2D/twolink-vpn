@@ -4,7 +4,6 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.concurrency import run_in_threadpool
 
 from app.core.db import get_session
 from app.core.security import verify_internal_api_key
@@ -12,7 +11,7 @@ from app.models.node import Node
 from app.models.subscription import Subscription
 from app.models.user import User
 from app.schemas.subscription import SubscriptionCreateRequest, SubscriptionResponse
-from app.services.xray_provisioning import add_vless_client, remove_vless_client
+from app.services.xray_client import get_xray_client
 
 router = APIRouter(prefix="/internal", dependencies=[Depends(verify_internal_api_key)])
 
@@ -44,7 +43,7 @@ async def create_subscription(
     session.add(subscription)
     await session.flush()
 
-    await run_in_threadpool(add_vless_client, node, client_uuid, token)
+    await get_xray_client(node).add_client(node, client_uuid, token)
 
     await session.commit()
     await session.refresh(subscription)
@@ -59,7 +58,7 @@ async def delete_subscription(token: str, session: AsyncSession = Depends(get_se
 
     node = (await session.execute(select(Node).where(Node.id == subscription.node_id))).scalar_one()
 
-    await run_in_threadpool(remove_vless_client, node, subscription.token)
+    await get_xray_client(node).remove_client(node, subscription.token)
 
     await session.delete(subscription)
     await session.commit()

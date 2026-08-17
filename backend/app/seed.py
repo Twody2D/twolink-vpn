@@ -30,6 +30,8 @@ async def seed_local_node() -> None:
         node.reality_public_key = settings.reality_public_key
         node.reality_short_id = settings.reality_short_id
         node.reality_server_name = server_name
+        node.is_local = True
+        node.status = "online"
         node.is_active = True
 
         await session.commit()
