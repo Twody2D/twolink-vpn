@@ -9,8 +9,8 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /etc/xray/generated
-      - /tmp
+      - /etc/xray/generated:mode=1777
+      - /tmp:mode=1777
     cpus: 0.3
 
   backend:
@@ -18,7 +18,7 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /tmp
+      - /tmp:mode=1777
     cpus: 0.5
 
   bot:
@@ -26,5 +26,5 @@ services:
       - no-new-privileges:true
     read_only: true
     tmpfs:
-      - /tmp
+      - /tmp:mode=1777
     cpus: 0.2
