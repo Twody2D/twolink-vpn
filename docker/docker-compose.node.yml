@@ -2,6 +2,9 @@ networks:
   twolink-node:
     driver: bridge
 
+volumes:
+  hysteria-tls:
+
 services:
   xray:
     build:
@@ -24,6 +27,27 @@ services:
     networks:
       - twolink-node
     mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  hysteria:
+    build:
+      context: ../hysteria
+    restart: unless-stopped
+    environment:
+      HYSTERIA_PORT: ${HYSTERIA_PORT}
+      HYSTERIA_OBFS_PASSWORD: ${HYSTERIA_OBFS_PASSWORD}
+      HYSTERIA_AUTH_URL: http://node-agent:8000/hysteria/authenticate
+    ports:
+      - "${HYSTERIA_PORT}:${HYSTERIA_PORT}/udp"
+    volumes:
+      - hysteria-tls:/etc/hysteria/tls
+    networks:
+      - twolink-node
+    mem_limit: 96m
     logging:
       driver: json-file
       options:
