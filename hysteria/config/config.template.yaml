@@ -1,0 +1,15 @@
+listen: :${HYSTERIA_PORT}
+
+tls:
+  cert: /etc/hysteria/tls/cert.pem
+  key: /etc/hysteria/tls/key.pem
+
+obfs:
+  type: salamander
+  salamander:
+    password: ${HYSTERIA_OBFS_PASSWORD}
+
+auth:
+  type: http
+  http:
+    url: ${HYSTERIA_AUTH_URL}

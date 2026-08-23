@@ -1,0 +1,5 @@
+.git
+config/config.yaml
+generated/
+tls/
+*.log
