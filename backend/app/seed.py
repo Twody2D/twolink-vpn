@@ -32,6 +32,7 @@ async def seed_local_node() -> None:
         node.reality_server_name = server_name
         node.hysteria_port = settings.hysteria_port
         node.hysteria_cert_fingerprint = settings.hysteria_cert_fingerprint
+        node.hysteria_obfs_password = settings.hysteria_obfs_password
         node.is_local = True
         node.status = "online"
         node.is_active = True

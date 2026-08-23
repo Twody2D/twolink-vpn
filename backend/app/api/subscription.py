@@ -9,7 +9,7 @@ from app.core.db import get_session
 from app.core.limiter import limiter
 from app.models.node import Node
 from app.models.subscription import Subscription
-from app.services.link_builder import build_vless_link
+from app.services.link_builder import build_hysteria2_link, build_vless_link
 
 router = APIRouter()
 
@@ -45,6 +45,7 @@ async def get_subscription(
     ).all()
 
     links = [build_vless_link(sub, node) for sub, node in rows]
+    links += [link for sub, node in rows if (link := build_hysteria2_link(sub, node)) is not None]
     content = base64.b64encode("\n".join(links).encode()).decode()
 
     return PlainTextResponse(content)

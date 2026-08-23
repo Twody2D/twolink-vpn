@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     # bootstrap pattern as the Reality keys above.
     hysteria_port: int | None = None
     hysteria_cert_fingerprint: str | None = None
+    hysteria_obfs_password: str | None = None
 
     # Plaintext API keys for remote pico-nodes' node-agents, format
     # "node_id:key,node_id2:key2". Never stored in the database — see

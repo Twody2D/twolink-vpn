@@ -36,6 +36,9 @@ class Node(Base, TimestampMixin):
     # client links (pinSHA256) instead of trusting `insecure` — the cert is
     # generated once per node and never rotated silently, so this stays valid.
     hysteria_cert_fingerprint: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    # Salamander obfuscation password — node-wide (like the Shadowsocks
+    # password), not per-subscriber. Needed to build hysteria2:// links.
+    hysteria_obfs_password: Mapped[str | None] = mapped_column(String(128), nullable=True)
 
     # True for the single node co-located with the backend (in-process/docker
     # network access to Xray). False for remote pico-nodes, which are only
