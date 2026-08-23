@@ -29,6 +29,11 @@ class Subscription(Base, TimestampMixin):
     # UUID identifying this subscriber as an Xray VLESS client on the node.
     vless_uuid: Mapped[str] = mapped_column(String(36), nullable=False)
 
+    # Cryptographically random password for this subscriber's Hysteria2
+    # credential on the same node — same lifecycle as vless_uuid, issued
+    # together so one subscription grants access via both protocols.
+    hysteria_password: Mapped[str] = mapped_column(String(64), nullable=False)
+
     traffic_limit_bytes: Mapped[int | None] = mapped_column(BigInteger, nullable=True)
     traffic_used_bytes: Mapped[int] = mapped_column(BigInteger, nullable=False, default=0)
 

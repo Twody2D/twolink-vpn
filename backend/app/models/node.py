@@ -31,6 +31,12 @@ class Node(Base, TimestampMixin):
     reality_short_id: Mapped[str] = mapped_column(String(16), nullable=False)
     reality_server_name: Mapped[str] = mapped_column(String(255), nullable=False)
 
+    hysteria_port: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # SHA-256 fingerprint of this node's Hysteria2 TLS certificate, pinned in
+    # client links (pinSHA256) instead of trusting `insecure` — the cert is
+    # generated once per node and never rotated silently, so this stays valid.
+    hysteria_cert_fingerprint: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
     # True for the single node co-located with the backend (in-process/docker
     # network access to Xray). False for remote pico-nodes, which are only
     # reachable through their node-agent over HTTPS with their own API key.

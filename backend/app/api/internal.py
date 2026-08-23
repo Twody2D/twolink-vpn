@@ -11,6 +11,7 @@ from app.models.node import Node
 from app.models.subscription import Subscription
 from app.models.user import User
 from app.schemas.subscription import SubscriptionCreateRequest, SubscriptionResponse
+from app.services.hysteria_client import get_hysteria_client
 from app.services.node_selection import select_least_loaded_node
 from app.services.xray_client import get_xray_client
 
@@ -40,17 +41,20 @@ async def create_subscription(
 
     token = secrets.token_urlsafe(32)
     client_uuid = str(uuid.uuid4())
+    hysteria_password = secrets.token_urlsafe(24)
 
     subscription = Subscription(
         user_id=user.id,
         node_id=node.id,
         token=token,
         vless_uuid=client_uuid,
+        hysteria_password=hysteria_password,
     )
     session.add(subscription)
     await session.flush()
 
     await get_xray_client(node).add_client(node, client_uuid, token)
+    await get_hysteria_client(node).add_client(node, hysteria_password, token)
 
     await session.commit()
     await session.refresh(subscription)
@@ -66,6 +70,7 @@ async def delete_subscription(token: str, session: AsyncSession = Depends(get_se
     node = (await session.execute(select(Node).where(Node.id == subscription.node_id))).scalar_one()
 
     await get_xray_client(node).remove_client(node, subscription.token)
+    await get_hysteria_client(node).remove_client(node, subscription.token)
 
     await session.delete(subscription)
     await session.commit()
